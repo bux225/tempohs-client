@@ -10,8 +10,9 @@ import UIKit
 import OpenTok
 import Alamofire
 
-var url:String = "http://10.0.0.181:8080"
+//var url:String = "http://10.0.0.181:8080"
 //var url:String = "http://10.121.15.37:8080"
+var url:String = "http://pure-coast-92727.herokuapp.com"
 struct OpenTokData {
     var name: String
     var kApiKey: String
@@ -25,11 +26,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var subscriber: OTSubscriber?
     var channels = ["Offense 1", "Offense 2", "Defense 1", "Defense 2"]
     var rooms: [OpenTokData] = []
-    //var openTokData = OpenTokData(url: "http://10.0.0.181:8080/session", kApiKey: "", kSessionId: "", kToken: "")
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("ViewDidLoad")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,11 +51,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return cell
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Channels:"
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let name = channels[indexPath.row]
+        print("Did Select channel: " + name)
         if !rooms.isEmpty && rooms.contains(where: {$0.name == name}) {
             print("room exists")
         } else {
+            print("New Room")
             let URLName = name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
             connectToAnOpenTokSession(roomName: URLName!)
         }
@@ -65,6 +72,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         var key: String = ""
         var id: String = ""
         var token: String = ""
+        print("Connect to OpenTokSession")
         
         Alamofire.request(url + "/room/:" + roomName)
             // 2
@@ -74,19 +82,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                         print("Error while fetching tags: \(String(describing: response.result.error))")
                         return
                 }
+                print("Got keys")
                 JSON = value as! [String:String]
                 key = JSON["apiKey"]!
                 id = JSON["sessionId"]!
                 token = JSON["token"]!
                 self.rooms.append(OpenTokData(name: roomName, kApiKey: key, kSessionId: id, kToken: token))
-                
                 self.session = OTSession(apiKey: key, sessionId: id, delegate: self)
+                print("Session Created")
                 var error: OTError?
                 self.session?.connect(withToken: token, error: &error)
                 if error != nil {
                     print(error!)
                 }
-                print(JSON)
+                print("Session Connected")
         }
     }
 
