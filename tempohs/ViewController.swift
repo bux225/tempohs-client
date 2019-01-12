@@ -10,32 +10,37 @@ import UIKit
 import OpenTok
 import Alamofire
 
-//var url:String = "http://10.0.0.181:8080"
-//var url:String = "http://10.121.15.37:8080"
 var url:String = "http://pure-coast-92727.herokuapp.com"
-struct OpenTokData {
-    var name: String
-    var kApiKey: String
-    var kSessionId: String
-    var kToken: String
-}
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    // OpenTok state variables
     var session: OTSession?
     var publisher: OTPublisher?
     var subscriber: OTSubscriber?
-    var channels = ["Offense 1", "Offense 2", "Defense 1", "Defense 2"]
-    var rooms: [OpenTokData] = []
-    
+    // Model state variable
+    var myChannels = [Channel]()
+    //data eventually comeing from administration
+    var numChannels = 4
+    var channelNames = ["Offense 1", "Offense 2", "Defense 1", "Defense 2"]
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //populate channel models manually for now
+        for i in 0...(numChannels - 1) {
+            let channel = Channel()
+            channel.rowInTableView = i
+            channel.name = channelNames[i]
+            let uniqueName = channelNames[i] + String(i)
+            channel.roomName = uniqueName.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+            self.myChannels.append(channel)
+        }
         print("ViewDidLoad")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
-        return channels.count
+        return numChannels
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -43,9 +48,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         
         // Configure the cell...
-        let channel = channels[indexPath.row]
-        cell.textLabel?.text = channel
-        cell.detailTextLabel?.text = "not connected"
+        cell.textLabel?.text = myChannels[indexPath.row].name
+        cell.detailTextLabel?.text = myChannels[indexPath.row].connectionStatus
         //cell.imageView?.image = UIImage(named: channel)
         
         return cell
@@ -56,26 +60,24 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let name = channels[indexPath.row]
-        print("Did Select channel: " + name)
-        if !rooms.isEmpty && rooms.contains(where: {$0.name == name}) {
-            print("room exists")
-        } else {
-            print("New Room")
-            let URLName = name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
-            connectToAnOpenTokSession(roomName: URLName!)
+        print("Did Select channel: " + self.myChannels[indexPath.row].name)
+       if self.myChannels[indexPath.row].sessionID.isEmpty {
+            //create room
+            createAnOpenTokSession(index: indexPath.row)
+            }
+       else {
+            //connect to existing room
+            connectToAnOpenTokSession(index: indexPath.row)
         }
+
+
     }
     
-    func connectToAnOpenTokSession(roomName: String) {
+    func createAnOpenTokSession(index: Int) {
         var JSON = [String:String]()
-        var key: String = ""
-        var id: String = ""
-        var token: String = ""
-        print("Connect to OpenTokSession")
         
-        Alamofire.request(url + "/room/:" + roomName)
-            // 2
+        //Get apikey, sessionid and token from server
+        Alamofire.request(url + "/room/:" + self.myChannels[index].roomName)
             .responseJSON { response in
                 guard response.result.isSuccess,
                     let value = response.result.value else {
@@ -83,20 +85,30 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                         return
                 }
                 print("Got keys")
+                //assign keys to model state variable
                 JSON = value as! [String:String]
-                key = JSON["apiKey"]!
-                id = JSON["sessionId"]!
-                token = JSON["token"]!
-                self.rooms.append(OpenTokData(name: roomName, kApiKey: key, kSessionId: id, kToken: token))
-                self.session = OTSession(apiKey: key, sessionId: id, delegate: self)
+                self.myChannels[index].apiKey = JSON["apiKey"]!
+                self.myChannels[index].sessionID = JSON["sessionId"]!
+                self.myChannels[index].token = JSON["token"]!
+                // create a new session in opentok
+                self.session = OTSession(apiKey: self.myChannels[index].apiKey, sessionId: self.myChannels[index].sessionID, delegate: self)
                 print("Session Created")
-                var error: OTError?
-                self.session?.connect(withToken: token, error: &error)
-                if error != nil {
-                    print(error!)
-                }
-                print("Session Connected")
+                //go connect to that new session
+                self.connectToAnOpenTokSession(index: index)
+
         }
+    }
+
+    
+    func connectToAnOpenTokSession(index: Int) {
+        // called when you re-enter a room
+        var error: OTError?
+        self.session?.connect(withToken: self.myChannels[index].token, error: &error)
+        if error != nil {
+            print(error!)
+            print("Yep")
+        }
+        print("Session Connected")
     }
 
 }

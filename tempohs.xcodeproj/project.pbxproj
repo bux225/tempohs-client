@@ -10,6 +10,7 @@
 		89600C69BF5C47953108EF47 /* Pods_tempohsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 641CD530831FA53A5F0D4F65 /* Pods_tempohsUITests.framework */; };
 		C273DDF67E600E6C868CF919 /* Pods_tempohs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 982173832779EE6178304703 /* Pods_tempohs.framework */; };
 		E644D7F02F19B28F0F4BA2CF /* Pods_tempohsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3EF32D9A97FEFB325F97D22 /* Pods_tempohsTests.framework */; };
+		E917726321E59B8E007DF3B1 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E917726221E59B8E007DF3B1 /* Channel.swift */; };
 		E9D59B7321DAB8FE00E945CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D59B7221DAB8FE00E945CB /* AppDelegate.swift */; };
 		E9D59B7521DAB8FE00E945CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D59B7421DAB8FE00E945CB /* ViewController.swift */; };
 		E9D59B7821DAB8FE00E945CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D59B7621DAB8FE00E945CB /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 		A78801D932025F7E2960B4ED /* Pods-tempohsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tempohsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tempohsTests/Pods-tempohsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B5EA0F319BB017AD91656810 /* Pods-tempohs.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tempohs.release.xcconfig"; path = "Pods/Target Support Files/Pods-tempohs/Pods-tempohs.release.xcconfig"; sourceTree = "<group>"; };
 		C3EF32D9A97FEFB325F97D22 /* Pods_tempohsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_tempohsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E917726221E59B8E007DF3B1 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		E9D59B6F21DAB8FE00E945CB /* tempohs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tempohs.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9D59B7221DAB8FE00E945CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E9D59B7421DAB8FE00E945CB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		E9D05E5021E2856E00421910 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E917726221E59B8E007DF3B1 /* Channel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9D59B7521DAB8FE00E945CB /* ViewController.swift in Sources */,
+				E917726321E59B8E007DF3B1 /* Channel.swift in Sources */,
 				E9D59B7321DAB8FE00E945CB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
